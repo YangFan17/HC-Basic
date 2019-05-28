@@ -3,6 +3,13 @@ using Abp.Zero.EntityFrameworkCore;
 using GYSWP.Authorization.Roles;
 using GYSWP.Authorization.Users;
 using GYSWP.MultiTenancy;
+using GYSWP.Employees;
+using GYSWP.Organizations;
+using GYSWP.SystemDatas;
+using GYSWP.Categorys;
+using GYSWP.Documents;
+using GYSWP.Clauses;
+using GYSWP.DocAttachments;
 
 namespace GYSWP.EntityFrameworkCore
 {
@@ -14,5 +21,13 @@ namespace GYSWP.EntityFrameworkCore
             : base(options)
         {
         }
+
+        public virtual DbSet<Organization> Organizations { get; set; }
+        public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<SystemData> SystemDatas { get; set; }
+        public virtual DbSet<Category> Categorys { get; set; }
+        public virtual DbSet<Document> Documents { get; set; }
+        public virtual DbSet<Clause> Clauses { get; set; }
+        public virtual DbSet<DocAttachment> DocAttachments { get; set; }
     }
 }

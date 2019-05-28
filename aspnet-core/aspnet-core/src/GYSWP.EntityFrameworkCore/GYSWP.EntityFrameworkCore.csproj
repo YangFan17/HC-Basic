@@ -23,4 +23,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GYSWP.Core\GYSWP.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EntityMapper\" />
+  </ItemGroup>
 </Project>

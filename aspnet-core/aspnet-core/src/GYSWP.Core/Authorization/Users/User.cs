@@ -8,7 +8,8 @@ namespace GYSWP.Authorization.Users
     public class User : AbpUser<User>
     {
         public const string DefaultPassword = "123qwe";
-
+        public string EmployeeId { get; set; }
+        public string EmployeeName { get; set; }
         public static string CreateRandomPassword()
         {
             return Guid.NewGuid().ToString("N").Truncate(16);
@@ -23,7 +24,7 @@ namespace GYSWP.Authorization.Users
                 Name = AdminUserName,
                 Surname = AdminUserName,
                 EmailAddress = emailAddress,
-                Roles = new List<UserRole>()
+                //Roles = new List<UserRole>()
             };
 
             user.SetNormalizedNames();

@@ -11,6 +11,9 @@
     <RootNamespace>GYSWP</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Senparc.CO2NET" Version="0.3.0.2" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\GYSWP.Core\GYSWP.Core.csproj" />
   </ItemGroup>
 </Project>
