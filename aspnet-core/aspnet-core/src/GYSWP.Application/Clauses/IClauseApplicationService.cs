@@ -20,6 +20,7 @@ using Abp.Application.Services.Dto;
 
 using GYSWP.Clauses.Dtos;
 using GYSWP.Clauses;
+using GYSWP.Dtos;
 
 namespace GYSWP.Clauses
 {
@@ -55,7 +56,7 @@ namespace GYSWP.Clauses
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task CreateOrUpdate(CreateOrUpdateClauseInput input);
+        Task<APIResultDto> CreateOrUpdate(CreateOrUpdateClauseInput input);
 
 
         /// <summary>
@@ -71,12 +72,6 @@ namespace GYSWP.Clauses
         /// </summary>
         Task BatchDelete(List<Guid> input);
 
-
-		/// <summary>
-        /// 导出Clause为excel表
-        /// </summary>
-        /// <returns></returns>
-		//Task<FileDto> GetToExcel();
-
+        Task<List<ClauseTreeNodeDto>> GetClauseTreeAsync(GetClausesInput input);
     }
 }

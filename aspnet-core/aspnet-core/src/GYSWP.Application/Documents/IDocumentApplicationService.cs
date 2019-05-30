@@ -21,6 +21,7 @@ using Abp.Application.Services.Dto;
 using GYSWP.Documents.Dtos;
 using GYSWP.Documents;
 using GYSWP.Employees.Dtos;
+using GYSWP.Dtos;
 
 namespace GYSWP.Documents
 {
@@ -56,7 +57,7 @@ namespace GYSWP.Documents
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task CreateOrUpdate(CreateOrUpdateDocumentInput input);
+        Task<APIResultDto> CreateOrUpdate(CreateOrUpdateDocumentInput input);
 
 
         /// <summary>

@@ -5,9 +5,11 @@ using Abp.Application.Services.Dto;
 using Abp.Domain.Entities.Auditing;
 using System.ComponentModel.DataAnnotations;
 using GYSWP.Categorys;
+using Abp.AutoMapper;
 
 namespace GYSWP.Categorys.Dtos
 {
+    [AutoMapFrom(typeof(Category))]
     public class CategoryListDto : FullAuditedEntityDto 
     {
 
@@ -33,7 +35,9 @@ namespace GYSWP.Categorys.Dtos
 		public string Desc { get; set; }
 
 
-
-
+        /// <summary>
+        /// 维护部门Id
+        /// </summary>
+        public long? DeptId { get; set; }
     }
 }

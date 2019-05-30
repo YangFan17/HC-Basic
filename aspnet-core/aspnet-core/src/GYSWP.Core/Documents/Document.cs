@@ -25,6 +25,11 @@ namespace GYSWP.Documents
         /// </summary>
         [Required]
         public virtual int CategoryId { get; set; }
+
+        /// <summary>
+        /// DeptIds
+        /// </summary>
+        public virtual string DeptIds { get; set; }
         /// <summary>
         /// 分类名描述（分类名层级以逗号分隔）
         /// </summary>
@@ -41,9 +46,14 @@ namespace GYSWP.Documents
         [StringLength(2000)]
         public virtual string Summary { get; set; }
         /// <summary>
+        /// 是否发布
+        /// </summary>
+        [Required]
+        public virtual bool IsPublish { get; set; }
+        /// <summary>
         /// 发布日期
         /// </summary>
-        public virtual DateTime? ReleaseDate { get; set; }
+        public virtual DateTime? PublishTime { get; set; }
         /// <summary>
         /// 二维码URL
         /// </summary>

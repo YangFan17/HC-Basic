@@ -127,7 +127,6 @@ namespace GYSWP.Categorys
 
         public async Task CreateOrUpdate(CreateOrUpdateCategoryInput input)
         {
-
             input.Category.ParentId = input.Category.ParentId ?? 0;
             if (input.Category.Id != 0 && input.Category.Id != null)
             {
@@ -240,8 +239,7 @@ namespace GYSWP.Categorys
             {
                 return new List<CategoryTreeNode>();
             }
-            //var categoryList = await _entityRepository.GetAll().WhereIf(deptId.HasValue, e => e.DeptId == deptId).ToListAsync();
-            var categoryList = await _entityRepository.GetAll().ToListAsync();
+            var categoryList = await _entityRepository.GetAll().WhereIf(deptId.HasValue, e => e.DeptId == deptId).ToListAsync();
             return GetTrees(0, categoryList);
         }
 

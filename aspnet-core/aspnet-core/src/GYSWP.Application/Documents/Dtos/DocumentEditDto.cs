@@ -1,18 +1,22 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using Abp.Application.Services.Dto;
+using Abp.AutoMapper;
 using Abp.Domain.Entities.Auditing;
 using GYSWP.Documents;
 
 namespace  GYSWP.Documents.Dtos
 {
-    public class DocumentEditDto
+    [AutoMapTo(typeof(Document))]
+
+    public class DocumentEditDto : FullAuditedEntityDto<Guid?>
     {
 
         /// <summary>
         /// Id
         /// </summary>
-        public Guid? Id { get; set; }         
+        //public Guid? Id { get; set; }         
 
 
         
@@ -23,11 +27,14 @@ namespace  GYSWP.Documents.Dtos
 		public string Name { get; set; }
 
 
-
-		/// <summary>
-		/// DocNo
-		/// </summary>
-		[Required(ErrorMessage="DocNo不能为空")]
+        /// <summary>
+        /// DeptIds
+        /// </summary>
+        public string DeptIds { get; set; }
+        /// <summary>
+        /// DocNo
+        /// </summary>
+        [Required(ErrorMessage="DocNo不能为空")]
 		public string DocNo { get; set; }
 
 
@@ -59,22 +66,19 @@ namespace  GYSWP.Documents.Dtos
 		/// </summary>
 		public string Summary { get; set; }
 
+        /// <summary>
+        /// 是否发布
+        /// </summary>
+        public bool IsPublish { get; set; }
+        /// <summary>
+        /// 发布日期
+        /// </summary>
+        public DateTime? PublishTime { get; set; }
 
 
-		/// <summary>
-		/// ReleaseDate
-		/// </summary>
-		public DateTime? ReleaseDate { get; set; }
-
-
-
-		/// <summary>
-		/// QrCodeUrl
-		/// </summary>
-		public string QrCodeUrl { get; set; }
-
-
-
-
+        /// <summary>
+        /// QrCodeUrl
+        /// </summary>
+        public string QrCodeUrl { get; set; }
     }
 }

@@ -24,6 +24,8 @@ using GYSWP.Documents.DomainService;
 using GYSWP.Employees.Dtos;
 using GYSWP.Employees;
 using GYSWP.Organizations;
+using GYSWP.Dtos;
+using GYSWP.Categorys;
 
 namespace GYSWP.Documents
 {
@@ -36,6 +38,7 @@ namespace GYSWP.Documents
         private readonly IRepository<Document, Guid> _entityRepository;
         private readonly IRepository<Employee, string> _employeeRepository;
         private readonly IRepository<Organization, long> _organizationRepository;
+        private readonly IRepository<Category> _categoryRepository;
 
         private readonly IDocumentManager _entityManager;
 
@@ -46,6 +49,7 @@ namespace GYSWP.Documents
         IRepository<Document, Guid> entityRepository
         , IRepository<Employee, string> employeeRepository
         , IRepository<Organization, long> organizationRepository
+        , IRepository<Category> categoryRepository
         , IDocumentManager entityManager
         )
         {
@@ -53,6 +57,7 @@ namespace GYSWP.Documents
              _entityManager=entityManager;
             _employeeRepository = employeeRepository;
             _organizationRepository = organizationRepository;
+            _categoryRepository = categoryRepository;
         }
 
 
@@ -64,10 +69,14 @@ namespace GYSWP.Documents
 
         public async Task<PagedResultDto<DocumentListDto>> GetPaged(GetDocumentsInput input)
 		{
-
-		    var query = _entityRepository.GetAll();
+            //var categories = await _categoryRepository.GetAll().Where(d => d.DeptId == input.DeptId).Select(c => c.Id).ToArrayAsync();
+            //var carr = Array.ConvertAll(categories, c => "," + c + ",");
+            var query = _entityRepository.GetAll().Where(v=>v.DeptIds == input.DeptId)
+                .WhereIf(input.CategoryId.HasValue, v=>v.CategoryId == input.CategoryId)
+                .WhereIf(!string.IsNullOrEmpty(input.KeyWord), e => e.Name.Contains(input.KeyWord) || e.DocNo.Contains(input.KeyWord));
+            //var query = _entityRepository.GetAll();
 			// TODO:根据传入的参数添加过滤条件
-            
+           
 
 			var count = await query.CountAsync();
 
@@ -129,18 +138,28 @@ DocumentEditDto editDto;
 		/// <param name="input"></param>
 		/// <returns></returns>
 		
-		public async Task CreateOrUpdate(CreateOrUpdateDocumentInput input)
+		public async Task<APIResultDto> CreateOrUpdate(CreateOrUpdateDocumentInput input)
 		{
 
-			if (input.Document.Id.HasValue)
-			{
-				await Update(input.Document);
-			}
-			else
-			{
-				await Create(input.Document);
-			}
-		}
+            //if (input.Document.Id.HasValue)
+            //{
+            //	await Update(input.Document);
+            //}
+            //else
+            //{
+            //	await Create(input.Document);
+            //}
+            if (input.Document.Id.HasValue)
+            {
+                await Update(input.Document);
+                return new APIResultDto() { Code = 0, Msg = "保存成功" };
+            }
+            else
+            {
+                var entity = await Create(input.Document);
+                return new APIResultDto() { Code = 0, Msg = "保存成功", Data = entity.Id };
+            }
+        }
 
 
 		/// <summary>

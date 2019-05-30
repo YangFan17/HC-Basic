@@ -28,5 +28,10 @@ namespace GYSWP.Categorys
         /// </summary>
         [StringLength(500)]
         public virtual string Desc { get; set; }
+
+        /// <summary>
+        /// 维护部门Id
+        /// </summary>
+        public virtual long? DeptId { get; set; }
     }
 }

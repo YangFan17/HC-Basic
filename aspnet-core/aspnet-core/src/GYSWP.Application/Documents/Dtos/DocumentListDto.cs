@@ -10,14 +10,11 @@ namespace GYSWP.Documents.Dtos
 {
     public class DocumentListDto : FullAuditedEntityDto<Guid> 
     {
-
-        
 		/// <summary>
 		/// Name
 		/// </summary>
 		[Required(ErrorMessage="Name不能为空")]
 		public string Name { get; set; }
-
 
 
 		/// <summary>
@@ -27,13 +24,15 @@ namespace GYSWP.Documents.Dtos
 		public string DocNo { get; set; }
 
 
-
-		/// <summary>
-		/// CategoryId
-		/// </summary>
-		[Required(ErrorMessage="CategoryId不能为空")]
+        /// <summary>
+        /// DeptIds
+        /// </summary>
+        public string DeptIds { get; set; }
+        /// <summary>
+        /// CategoryId
+        /// </summary>
+        [Required(ErrorMessage="CategoryId不能为空")]
 		public int CategoryId { get; set; }
-
 
 
 		/// <summary>
@@ -42,12 +41,10 @@ namespace GYSWP.Documents.Dtos
 		public string CategoryDesc { get; set; }
 
 
-
 		/// <summary>
 		/// DocThum
 		/// </summary>
 		public string DocThum { get; set; }
-
 
 
 		/// <summary>
@@ -56,21 +53,19 @@ namespace GYSWP.Documents.Dtos
 		public string Summary { get; set; }
 
 
-
-		/// <summary>
-		/// ReleaseDate
-		/// </summary>
-		public DateTime? ReleaseDate { get; set; }
-
-
-
-		/// <summary>
-		/// QrCodeUrl
-		/// </summary>
-		public string QrCodeUrl { get; set; }
+        /// <summary>
+        /// 是否发布
+        /// </summary>
+        public bool IsPublish { get; set; }
+        /// <summary>
+        /// 发布日期
+        /// </summary>
+        public DateTime? PublishTime { get; set; }
 
 
-
-
+        /// <summary>
+        /// QrCodeUrl
+        /// </summary>
+        public string QrCodeUrl { get; set; }
     }
 }
