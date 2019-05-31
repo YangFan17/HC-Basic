@@ -240,6 +240,20 @@ namespace GYSWP.Clauses
             // TODO:批量删除前的逻辑判断，是否允许删除
             await _entityRepository.DeleteAsync(s => input.Contains(s.Id));
         }
+
+        public async Task<APIResultDto> ClauseRemoveById(EntityDto<Guid> id)
+        {
+            int childCount = await _entityRepository.GetAll().Where(v => v.ParentId == id.Id).CountAsync();
+            if (childCount != 0)
+            {
+                return new APIResultDto() { Code = 1, Msg = "存在子条款" };
+            }
+            else
+            {
+                await _entityRepository.DeleteAsync(id.Id);
+                return new APIResultDto() { Code = 0, Msg = "删除成功" };
+            }
+        }
     }
 }
 

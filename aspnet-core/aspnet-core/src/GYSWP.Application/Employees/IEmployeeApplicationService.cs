@@ -71,5 +71,6 @@ namespace GYSWP.Employees
         /// </summary>
         Task BatchDelete(List<string> input);
         Task<PagedResultDto<EmployeeListDto>> GetEmployeeListByIdAsync(GetEmployeesInput input);
+        Task<List<EmployeeListDto>> GetEmployeeListByDeptIdAsync(GetEmployeesInput input);
     }
 }

@@ -73,5 +73,6 @@ namespace GYSWP.Clauses
         Task BatchDelete(List<Guid> input);
 
         Task<List<ClauseTreeNodeDto>> GetClauseTreeAsync(GetClausesInput input);
+        Task<APIResultDto> ClauseRemoveById(EntityDto<Guid> id);
     }
 }

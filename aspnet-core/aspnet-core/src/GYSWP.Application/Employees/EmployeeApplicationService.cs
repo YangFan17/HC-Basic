@@ -41,11 +41,11 @@ namespace GYSWP.Employees
         ///</summary>
         public EmployeeAppService(
         IRepository<Employee, string> entityRepository
-        ,IEmployeeManager entityManager
+        , IEmployeeManager entityManager
         )
         {
-            _entityRepository = entityRepository; 
-             _entityManager=entityManager;
+            _entityRepository = entityRepository;
+            _entityManager = entityManager;
         }
 
 
@@ -54,144 +54,144 @@ namespace GYSWP.Employees
         ///</summary>
         /// <param name="input"></param>
         /// <returns></returns>
-		 
+
         public async Task<PagedResultDto<EmployeeListDto>> GetPaged(GetEmployeesInput input)
-		{
+        {
 
-		    var query = _entityRepository.GetAll();
-			// TODO:根据传入的参数添加过滤条件
-            
-
-			var count = await query.CountAsync();
-
-			var entityList = await query
-					.OrderBy(input.Sorting).AsNoTracking()
-					.PageBy(input)
-					.ToListAsync();
-
-			// var entityListDtos = ObjectMapper.Map<List<EmployeeListDto>>(entityList);
-			var entityListDtos =entityList.MapTo<List<EmployeeListDto>>();
-
-			return new PagedResultDto<EmployeeListDto>(count,entityListDtos);
-		}
+            var query = _entityRepository.GetAll();
+            // TODO:根据传入的参数添加过滤条件
 
 
-		/// <summary>
-		/// 通过指定id获取EmployeeListDto信息
-		/// </summary>
-		 
-		public async Task<EmployeeListDto> GetById(EntityDto<string> input)
-		{
-			var entity = await _entityRepository.GetAsync(input.Id);
+            var count = await query.CountAsync();
 
-		    return entity.MapTo<EmployeeListDto>();
-		}
+            var entityList = await query
+                    .OrderBy(input.Sorting).AsNoTracking()
+                    .PageBy(input)
+                    .ToListAsync();
 
-		/// <summary>
-		/// 获取编辑 Employee
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		
-		public async Task<GetEmployeeForEditOutput> GetForEdit(string id)
-		{
-			var output = new GetEmployeeForEditOutput();
+            // var entityListDtos = ObjectMapper.Map<List<EmployeeListDto>>(entityList);
+            var entityListDtos = entityList.MapTo<List<EmployeeListDto>>();
+
+            return new PagedResultDto<EmployeeListDto>(count, entityListDtos);
+        }
+
+
+        /// <summary>
+        /// 通过指定id获取EmployeeListDto信息
+        /// </summary>
+
+        public async Task<EmployeeListDto> GetById(EntityDto<string> input)
+        {
+            var entity = await _entityRepository.GetAsync(input.Id);
+
+            return entity.MapTo<EmployeeListDto>();
+        }
+
+        /// <summary>
+        /// 获取编辑 Employee
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        public async Task<GetEmployeeForEditOutput> GetForEdit(string id)
+        {
+            var output = new GetEmployeeForEditOutput();
             EmployeeEditDto editDto;
 
-			if (!string.IsNullOrEmpty(id))
-			{
-				var entity = await _entityRepository.GetAsync(id);
+            if (!string.IsNullOrEmpty(id))
+            {
+                var entity = await _entityRepository.GetAsync(id);
 
-				editDto = entity.MapTo<EmployeeEditDto>();
+                editDto = entity.MapTo<EmployeeEditDto>();
 
-				//employeeEditDto = ObjectMapper.Map<List<employeeEditDto>>(entity);
-			}
-			else
-			{
-				editDto = new EmployeeEditDto();
-			}
+                //employeeEditDto = ObjectMapper.Map<List<employeeEditDto>>(entity);
+            }
+            else
+            {
+                editDto = new EmployeeEditDto();
+            }
 
-			output.Employee = editDto;
-			return output;
-		}
-
-
-		/// <summary>
-		/// 添加或者修改Employee的公共方法
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		
-		public async Task CreateOrUpdate(CreateOrUpdateEmployeeInput input)
-		{
-
-			if (!string.IsNullOrEmpty(input.Employee.Id))
-			{
-				await Update(input.Employee);
-			}
-			else
-			{
-				await Create(input.Employee);
-			}
-		}
+            output.Employee = editDto;
+            return output;
+        }
 
 
-		/// <summary>
-		/// 新增Employee
-		/// </summary>
-		
-		protected virtual async Task<EmployeeEditDto> Create(EmployeeEditDto input)
-		{
-			//TODO:新增前的逻辑判断，是否允许新增
+        /// <summary>
+        /// 添加或者修改Employee的公共方法
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        public async Task CreateOrUpdate(CreateOrUpdateEmployeeInput input)
+        {
+
+            if (!string.IsNullOrEmpty(input.Employee.Id))
+            {
+                await Update(input.Employee);
+            }
+            else
+            {
+                await Create(input.Employee);
+            }
+        }
+
+
+        /// <summary>
+        /// 新增Employee
+        /// </summary>
+
+        protected virtual async Task<EmployeeEditDto> Create(EmployeeEditDto input)
+        {
+            //TODO:新增前的逻辑判断，是否允许新增
 
             // var entity = ObjectMapper.Map <Employee>(input);
-            var entity=input.MapTo<Employee>();
-			
-
-			entity = await _entityRepository.InsertAsync(entity);
-			return entity.MapTo<EmployeeEditDto>();
-		}
-
-		/// <summary>
-		/// 编辑Employee
-		/// </summary>
-		
-		protected virtual async Task Update(EmployeeEditDto input)
-		{
-			//TODO:更新前的逻辑判断，是否允许更新
-
-			var entity = await _entityRepository.GetAsync(input.Id);
-			input.MapTo(entity);
-
-			// ObjectMapper.Map(input, entity);
-		    await _entityRepository.UpdateAsync(entity);
-		}
+            var entity = input.MapTo<Employee>();
 
 
+            entity = await _entityRepository.InsertAsync(entity);
+            return entity.MapTo<EmployeeEditDto>();
+        }
 
-		/// <summary>
-		/// 删除Employee信息的方法
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		
-		public async Task Delete(EntityDto<string> input)
-		{
-			//TODO:删除前的逻辑判断，是否允许删除
-			await _entityRepository.DeleteAsync(input.Id);
-		}
+        /// <summary>
+        /// 编辑Employee
+        /// </summary>
+
+        protected virtual async Task Update(EmployeeEditDto input)
+        {
+            //TODO:更新前的逻辑判断，是否允许更新
+
+            var entity = await _entityRepository.GetAsync(input.Id);
+            input.MapTo(entity);
+
+            // ObjectMapper.Map(input, entity);
+            await _entityRepository.UpdateAsync(entity);
+        }
 
 
 
-		/// <summary>
-		/// 批量删除Employee的方法
-		/// </summary>
-		
-		public async Task BatchDelete(List<string> input)
-		{
-			// TODO:批量删除前的逻辑判断，是否允许删除
-			await _entityRepository.DeleteAsync(s => input.Contains(s.Id));
-		}
+        /// <summary>
+        /// 删除Employee信息的方法
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        public async Task Delete(EntityDto<string> input)
+        {
+            //TODO:删除前的逻辑判断，是否允许删除
+            await _entityRepository.DeleteAsync(input.Id);
+        }
+
+
+
+        /// <summary>
+        /// 批量删除Employee的方法
+        /// </summary>
+
+        public async Task BatchDelete(List<string> input)
+        {
+            // TODO:批量删除前的逻辑判断，是否允许删除
+            await _entityRepository.DeleteAsync(s => input.Contains(s.Id));
+        }
 
         public async Task<PagedResultDto<EmployeeListDto>> GetEmployeeListByIdAsync(GetEmployeesInput input)
         {
@@ -234,6 +234,22 @@ namespace GYSWP.Employees
                         employeeListDtos
                     );
             }
+        }
+
+        /// <summary>
+        /// 部门选择员工
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<List<EmployeeListDto>> GetEmployeeListByDeptIdAsync(GetEmployeesInput input)
+        {
+            var query = _entityRepository.GetAll().Where(v => v.Department.Contains(input.DepartId))
+                  .WhereIf(!string.IsNullOrEmpty(input.KeyWord), u => u.Mobile.Contains(input.KeyWord) || u.Name.Contains(input.KeyWord));
+            var employees = await query
+                    .OrderBy(v => v.Name).AsNoTracking()
+                    .ToListAsync();
+            var employeeListDtos = employees.MapTo<List<EmployeeListDto>>();
+            return employeeListDtos;
         }
     }
 }

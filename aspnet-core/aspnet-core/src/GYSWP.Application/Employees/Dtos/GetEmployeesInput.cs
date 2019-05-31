@@ -7,6 +7,7 @@ namespace GYSWP.Employees.Dtos
 {
     public class GetEmployeesInput : PagedSortedAndFilteredInputDto, IShouldNormalize
     {
+        public string KeyWord { get; set; }
         public string Name { get; set; }
         public string DepartId { get; set; }
         public string Mobile { get; set; }

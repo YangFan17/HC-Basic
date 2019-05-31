@@ -46,11 +46,6 @@ namespace GYSWP.Documents
         [StringLength(2000)]
         public virtual string Summary { get; set; }
         /// <summary>
-        /// 是否发布
-        /// </summary>
-        [Required]
-        public virtual bool IsPublish { get; set; }
-        /// <summary>
         /// 发布日期
         /// </summary>
         public virtual DateTime? PublishTime { get; set; }
@@ -59,5 +54,18 @@ namespace GYSWP.Documents
         /// </summary>
         [StringLength(200)]
         public virtual string QrCodeUrl { get; set; }
+        /// <summary>
+        /// 授权员工名称（以逗号分隔）
+        /// </summary>
+        public virtual string EmployeeDes { get; set; }
+
+        /// <summary>
+        /// 是否是全部用户
+        /// </summary>
+        public virtual bool IsAllUser { get; set; }
+        /// <summary>
+        /// 员工授权Ids（以逗号分隔）
+        /// </summary>
+        public virtual string EmployeeIds { get; set; }
     }
 }

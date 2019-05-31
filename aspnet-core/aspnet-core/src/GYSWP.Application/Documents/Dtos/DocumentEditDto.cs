@@ -67,10 +67,6 @@ namespace  GYSWP.Documents.Dtos
 		public string Summary { get; set; }
 
         /// <summary>
-        /// 是否发布
-        /// </summary>
-        public bool IsPublish { get; set; }
-        /// <summary>
         /// 发布日期
         /// </summary>
         public DateTime? PublishTime { get; set; }
@@ -80,5 +76,18 @@ namespace  GYSWP.Documents.Dtos
         /// QrCodeUrl
         /// </summary>
         public string QrCodeUrl { get; set; }
+        /// <summary>
+        /// 授权员工名称（以逗号分隔）
+        /// </summary>
+        public string EmployeeDes { get; set; }
+
+        /// <summary>
+        /// 是否是全部用户
+        /// </summary>
+        public bool IsAllUser { get; set; }
+        /// <summary>
+        /// 员工授权Ids（以逗号分隔）
+        /// </summary>
+        public string EmployeeIds { get; set; }
     }
 }
