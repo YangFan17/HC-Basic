@@ -240,7 +240,7 @@ namespace GYSWP.Organizations
         /// </summary>
         public async Task<APIResultDto> SynchronousOrganizationAsync()
         {
-            string accessToken = "0d92bb047e663c9b92436ba6f278a984";
+            string accessToken = "46a654e963ef3fa299dc5a7a34181cb5";
             //string accessToken = _dingDingAppService.GetAccessTokenByApp(DingDingAppEnum.会议申请); //GetAccessToken();
             var depts = Get.GetJson<DingDepartmentDto>(string.Format("https://oapi.dingtalk.com/department/list?access_token={0}", accessToken));
             var entityByDD = depts.department.Select(o => new OrganizationListDto()
@@ -304,7 +304,8 @@ namespace GYSWP.Organizations
                     Email = e.email,
                     HiredDate = e.hiredDate,
                     Avatar = e.avatar,
-                    Active = e.active
+                    Active = e.active,
+                    Unionid = e.unionid
                 }).ToList();
                 var originEntity = await _employeeRepository.GetAll().ToListAsync();
                 foreach (var item in entityByDD)
@@ -322,6 +323,7 @@ namespace GYSWP.Organizations
                         e.HiredDate = item.HiredDate;
                         e.Avatar = item.Avatar;
                         e.Active = item.Active;
+                        e.Unionid = item.Unionid;
                     }
                     else
                     {
@@ -337,6 +339,7 @@ namespace GYSWP.Organizations
                         employee.HiredDate = item.HiredDate;
                         employee.Avatar = item.Avatar;
                         employee.Active = item.Active;
+                        employee.Unionid = item.Unionid;
                         await CreateSyncEmployeeAsync(employee);
                     }
                 }

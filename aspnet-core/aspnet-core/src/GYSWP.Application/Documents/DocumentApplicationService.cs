@@ -268,7 +268,7 @@ DocumentEditDto editDto;
             var root = new DocNzTreeNode()
             {
                 key = "0",
-                title = "资料维护部门"
+                title = "标准归口部门"
             };
 
             //当前用户角色

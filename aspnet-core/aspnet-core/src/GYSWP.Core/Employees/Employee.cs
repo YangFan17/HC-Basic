@@ -74,6 +74,11 @@ namespace GYSWP.Employees
         /// </summary>
         [StringLength(500)]
         public virtual string Remark { get; set; }
+
+        /// <summary>
+        /// 员工在当前开发者企业账号范围内的唯一标识，系统生成，固定值，不会改变
+        /// </summary>
+        public virtual string Unionid { get; set; }
     }
 
 }

@@ -8,6 +8,7 @@ namespace GYSWP.DingDing
     public interface IDingDingAppService : IApplicationService
     {
         string GetAccessToken(string appkey, string appsecret);
+        string GetAccessTokenByAppId(string appId, string appsecret);
 
         string GetUserId(string accessToken, string code);
     }

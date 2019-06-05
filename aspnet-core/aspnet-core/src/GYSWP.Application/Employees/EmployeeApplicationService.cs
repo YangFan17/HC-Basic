@@ -17,12 +17,10 @@ using Abp.Domain.Repositories;
 using Abp.Application.Services.Dto;
 using Abp.Linq.Extensions;
 
-
 using GYSWP.Employees;
 using GYSWP.Employees.Dtos;
 using GYSWP.Employees.DomainService;
-
-
+using GYSWP.Authorization.Users;
 
 namespace GYSWP.Employees
 {
@@ -33,6 +31,7 @@ namespace GYSWP.Employees
     public class EmployeeAppService : GYSWPAppServiceBase, IEmployeeAppService
     {
         private readonly IRepository<Employee, string> _entityRepository;
+        private readonly IRepository<User, long> _userRepository;
 
         private readonly IEmployeeManager _entityManager;
 
@@ -42,9 +41,11 @@ namespace GYSWP.Employees
         public EmployeeAppService(
         IRepository<Employee, string> entityRepository
         , IEmployeeManager entityManager
+        , IRepository<User, long> userRepository
         )
         {
             _entityRepository = entityRepository;
+            _userRepository = userRepository;
             _entityManager = entityManager;
         }
 
@@ -250,6 +251,18 @@ namespace GYSWP.Employees
                     .ToListAsync();
             var employeeListDtos = employees.MapTo<List<EmployeeListDto>>();
             return employeeListDtos;
+        }
+
+        [AbpAllowAnonymous]
+        public async Task<ScanUserInfo> GetEmployeeByUnionIdAsync(string unionId)
+        {
+            //var emp =  _entityRepository.GetAll().Where(v => v.Unionid == unionId);
+            var user = await _userRepository.GetAll().Where(v => v.UnionId == unionId).Select(v => new ScanUserInfo()
+            {
+                UserName = v.UserName,
+                Password = v.Password
+            }).FirstOrDefaultAsync();
+            return user;
         }
     }
 }

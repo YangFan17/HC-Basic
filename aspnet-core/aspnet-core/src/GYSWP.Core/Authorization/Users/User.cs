@@ -10,6 +10,7 @@ namespace GYSWP.Authorization.Users
         public const string DefaultPassword = "123qwe";
         public string EmployeeId { get; set; }
         public string EmployeeName { get; set; }
+        public string UnionId { get; set; }
         public static string CreateRandomPassword()
         {
             return Guid.NewGuid().ToString("N").Truncate(16);

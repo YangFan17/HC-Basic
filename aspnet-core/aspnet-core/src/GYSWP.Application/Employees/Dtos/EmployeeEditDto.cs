@@ -113,5 +113,7 @@ namespace  GYSWP.Employees.Dtos
 		/// Remark
 		/// </summary>
 		public string Remark { get; set; }
+
+        public string Unionid { get; set; }
     }
 }

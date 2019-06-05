@@ -9,7 +9,7 @@ namespace GYSWP.Models.TokenAuth
         [StringLength(AbpUserBase.MaxEmailAddressLength)]
         public string UserNameOrEmailAddress { get; set; }
 
-        [Required]
+        //[Required]
         [StringLength(AbpUserBase.MaxPlainPasswordLength)]
         public string Password { get; set; }
         

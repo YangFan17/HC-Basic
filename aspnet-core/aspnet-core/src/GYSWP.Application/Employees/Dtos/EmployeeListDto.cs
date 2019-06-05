@@ -110,6 +110,11 @@ namespace GYSWP.Employees.Dtos
 		/// Remark
 		/// </summary>
 		public string Remark { get; set; }
+
+        /// <summary>
+        /// 员工在当前开发者企业账号范围内的唯一标识，系统生成，固定值，不会改变
+        /// </summary>
+        public string Unionid { get; set; }
     }
 
     public class NzTreeNode
@@ -136,5 +141,14 @@ namespace GYSWP.Employees.Dtos
             }
         }
         public new List<DocNzTreeNode> children { get; set; }
+    }
+
+    /// <summary>
+    /// 扫码登录获取的用户信息
+    /// </summary>
+    public class ScanUserInfo
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }

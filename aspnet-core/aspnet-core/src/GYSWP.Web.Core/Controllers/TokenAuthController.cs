@@ -17,12 +17,22 @@ using GYSWP.Authorization;
 using GYSWP.Authorization.Users;
 using GYSWP.Models.TokenAuth;
 using GYSWP.MultiTenancy;
+using GYSWP.Employees.Dtos;
+using GYSWP.DingDing;
+using GYSWP.Employees;
+using GYSWP.DingDing.Dtos;
+using Senparc.CO2NET.Helpers;
+using System.IO;
+using System.Text;
+using Senparc.CO2NET.HttpUtility;
 
 namespace GYSWP.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class TokenAuthController : GYSWPControllerBase
     {
+        private string APPID = "dingoanherbetgt7ld5rrh";
+        private string REDIRECT_URI = "http://localhost:21021";
         private readonly LogInManager _logInManager;
         private readonly ITenantCache _tenantCache;
         private readonly AbpLoginResultTypeHelper _abpLoginResultTypeHelper;
@@ -30,6 +40,8 @@ namespace GYSWP.Controllers
         private readonly IExternalAuthConfiguration _externalAuthConfiguration;
         private readonly IExternalAuthManager _externalAuthManager;
         private readonly UserRegistrationManager _userRegistrationManager;
+        IDingDingAppService _dingDingAppService;
+        IEmployeeAppService _employeeAppService;
 
         public TokenAuthController(
             LogInManager logInManager,
@@ -38,7 +50,9 @@ namespace GYSWP.Controllers
             TokenAuthConfiguration configuration,
             IExternalAuthConfiguration externalAuthConfiguration,
             IExternalAuthManager externalAuthManager,
-            UserRegistrationManager userRegistrationManager)
+            UserRegistrationManager userRegistrationManager
+            , IDingDingAppService dingDingAppService
+            , IEmployeeAppService employeeAppService)
         {
             _logInManager = logInManager;
             _tenantCache = tenantCache;
@@ -47,6 +61,8 @@ namespace GYSWP.Controllers
             _externalAuthConfiguration = externalAuthConfiguration;
             _externalAuthManager = externalAuthManager;
             _userRegistrationManager = userRegistrationManager;
+            _dingDingAppService = dingDingAppService;
+            _employeeAppService = employeeAppService;
         }
 
         [HttpPost]
@@ -54,7 +70,8 @@ namespace GYSWP.Controllers
         {
             var loginResult = await GetLoginResultAsync(
                 model.UserNameOrEmailAddress,
-                model.Password,
+                //model.Password,
+                "123qwe",
                 GetTenancyNameOrNull()
             );
 
@@ -68,6 +85,54 @@ namespace GYSWP.Controllers
                 UserId = loginResult.User.Id
             };
         }
+
+        //[HttpGet]
+        //public object AuthenticateByScanCodeAsync123(string loginTmpCode)
+        //{
+        //   var x= Redirect(string.Format("https://oapi.dingtalk.com/connect/oauth2/sns_authorize?appid={0}&response_type=code&scope=snsapi_login&state=STATE&redirect_uri={1}&loginTmpCode={0}", "dingoanherbetgt7ld5rrh", string.Format("http://localhost:21021/api/TokenAuth/AuthenticateByScanCodeAsync"), loginTmpCode));
+        //    return x;
+        //}
+
+
+        ///// <summary>
+        ///// 扫码登录验证
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //[HttpGet]
+        //public ScanUserInfo AuthenticateByScanCodeAsync(string code,string state)
+        //{
+        //    string appSecret = "--HvFZSQx765LkFskrrKhELYQZdSqpxUgDEYktz60D860O45QTNCRYosZ-SXsB3E";
+        //    string accessToken = _dingDingAppService.GetAccessTokenByAppId(APPID, appSecret);
+        //    var url = string.Format("https://oapi.dingtalk.com/sns/getuserinfo_bycode?access_token={0}", accessToken);
+        //    ScanLogin dto = new ScanLogin();
+        //    dto.tmp_auth_code = code;
+        //    var jsonString = SerializerHelper.GetJsonString(dto, null);
+        //    using (MemoryStream ms = new MemoryStream())
+        //    {
+        //        var bytes = Encoding.UTF8.GetBytes(jsonString);
+        //        ms.Write(bytes, 0, bytes.Length);
+        //        ms.Seek(0, SeekOrigin.Begin);
+        //        var obj = Post.PostGetJson<ScanLoginInfo>(url, null, ms);
+        //        if (obj.errcode == "0")
+        //        {
+        //            var user = _employeeAppService.GetEmployeeByUnionIdAsync(obj.user_info.unionId).Result;
+        //            //return Json(user);
+        //            //AuthenticateModel model = new AuthenticateModel();
+        //            user.Password = "123qwe";
+        //            //user.UserNameOrEmailAddress = user.UserName;
+        //            //var result = await Authenticate(model);
+        //            return user;
+        //            //return Redirect("http://localhost:4200/account/login?name={0}&pwd={1}",user.UserName,user.Password);
+        //            //return model;
+        //        }
+        //        else
+        //        {
+        //            //return Redirect("http://localhost:4200/gyswp/#/app/home");
+        //            return null;
+        //        }
+        //    }
+        //}
 
         [HttpGet]
         public List<ExternalLoginProviderInfoModel> GetExternalAuthenticationProviders()

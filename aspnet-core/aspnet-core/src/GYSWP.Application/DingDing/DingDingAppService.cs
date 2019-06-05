@@ -30,6 +30,12 @@ namespace GYSWP.DingDing
             Logger.InfoFormat("AccessToken response errmsg:{0} body:{1}", accessTokenDto.errmsg, accessTokenDto.access_token);
             return accessTokenDto.access_token;
         }
+        public string GetAccessTokenByAppId(string appId, string appsecret)
+        {
+            AccessTokenDto accessTokenDto = Get.GetJson<AccessTokenDto>(string.Format("https://oapi.dingtalk.com/sns/gettoken?appid={0}&appsecret={1}", appId, appsecret));
+            Logger.InfoFormat("AccessToken response errmsg:{0} body:{1}", accessTokenDto.errmsg, accessTokenDto.access_token);
+            return accessTokenDto.access_token;
+        }
 
         /// <summary>
         /// 获取用户Id
@@ -94,5 +100,6 @@ namespace GYSWP.DingDing
             }
             return config;
         }
+
     }
 }
