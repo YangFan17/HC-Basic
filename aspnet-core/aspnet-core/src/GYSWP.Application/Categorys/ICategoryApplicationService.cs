@@ -75,5 +75,6 @@ namespace GYSWP.Categorys
         Task<APIResultDto> CategoryRemoveById(EntityDto<int> id);
         Task<List<CategoryTreeNode>> GetTreeAsync(long? deptId);
         Task<string> GetParentName(int id);
+        Task<List<SelectGroups>> GetCategoryTypeByDeptAsync();
     }
 }

@@ -23,6 +23,7 @@ using GYSWP.Categorys.Dtos;
 using GYSWP.Categorys.DomainService;
 using GYSWP.Dtos;
 using GYSWP.Documents;
+using GYSWP.Employees;
 
 namespace GYSWP.Categorys
 {
@@ -34,7 +35,7 @@ namespace GYSWP.Categorys
     {
         private readonly IRepository<Category, int> _entityRepository;
         private readonly IRepository<Document, Guid> _documentRepository;
-
+        private readonly IRepository<Employee, string> _employeeRepository;
         private readonly ICategoryManager _entityManager;
 
         /// <summary>
@@ -44,11 +45,13 @@ namespace GYSWP.Categorys
         IRepository<Category, int> entityRepository
         , IRepository<Document, Guid> documentRepository
         , ICategoryManager entityManager
+        , IRepository<Employee, string> employeeRepository
         )
         {
             _entityRepository = entityRepository;
             _entityManager = entityManager;
             _documentRepository = documentRepository;
+            _employeeRepository = employeeRepository;
         }
 
 
@@ -272,6 +275,24 @@ namespace GYSWP.Categorys
             {
                 GetCurrentName(doc.ParentId.Value, ref result);
             }
+            return result;
+        }
+
+        /// <summary>
+        /// 按照部门id获取标准分类
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<SelectGroups>> GetCategoryTypeByDeptAsync()
+        {
+            var curUser = await GetCurrentUserAsync();
+            var deptId = await _employeeRepository.GetAll().Where(v => v.Id == curUser.EmployeeId).Select(v => v.Department).FirstOrDefaultAsync();
+            var entity = await (from c in _entityRepository.GetAll().Where(v => "[" + v.DeptId + "]" == deptId)
+                                select new
+                                {
+                                    text = c.Name,
+                                    value = c.Id,
+                                }).OrderBy(v => v.value).ToListAsync();
+            var result = entity.MapTo<List<SelectGroups>>();
             return result;
         }
     }

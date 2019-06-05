@@ -40,8 +40,8 @@ namespace GYSWP.Controllers
         private readonly IExternalAuthConfiguration _externalAuthConfiguration;
         private readonly IExternalAuthManager _externalAuthManager;
         private readonly UserRegistrationManager _userRegistrationManager;
-        IDingDingAppService _dingDingAppService;
-        IEmployeeAppService _employeeAppService;
+        //IDingDingAppService _dingDingAppService;
+        //IEmployeeAppService _employeeAppService;
 
         public TokenAuthController(
             LogInManager logInManager,
@@ -51,8 +51,9 @@ namespace GYSWP.Controllers
             IExternalAuthConfiguration externalAuthConfiguration,
             IExternalAuthManager externalAuthManager,
             UserRegistrationManager userRegistrationManager
-            , IDingDingAppService dingDingAppService
-            , IEmployeeAppService employeeAppService)
+            //, IDingDingAppService dingDingAppService
+            //, IEmployeeAppService employeeAppService
+            )
         {
             _logInManager = logInManager;
             _tenantCache = tenantCache;
@@ -61,8 +62,8 @@ namespace GYSWP.Controllers
             _externalAuthConfiguration = externalAuthConfiguration;
             _externalAuthManager = externalAuthManager;
             _userRegistrationManager = userRegistrationManager;
-            _dingDingAppService = dingDingAppService;
-            _employeeAppService = employeeAppService;
+            //_dingDingAppService = dingDingAppService;
+            //_employeeAppService = employeeAppService;
         }
 
         [HttpPost]

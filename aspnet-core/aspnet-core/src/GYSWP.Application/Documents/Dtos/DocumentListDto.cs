@@ -79,4 +79,14 @@ namespace GYSWP.Documents.Dtos
         /// </summary>
         public string EmployeeIds { get; set; }
     }
+
+    [AutoMapFrom(typeof(Document))]
+    public class DocumentTitleDto : EntityDto<Guid>
+    {
+        public string Name { get; set; }
+        public string DocNo { get; set; }
+        public string CategoryDesc { get; set; }
+        public DateTime? PublishTime { get; set; }
+        public string DeptName { get; set; }
+    }
 }

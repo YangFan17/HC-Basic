@@ -39,7 +39,6 @@ namespace GYSWP.Documents
         private readonly IRepository<Employee, string> _employeeRepository;
         private readonly IRepository<Organization, long> _organizationRepository;
         private readonly IRepository<Category> _categoryRepository;
-
         private readonly IDocumentManager _entityManager;
 
         /// <summary>
@@ -53,8 +52,8 @@ namespace GYSWP.Documents
         , IDocumentManager entityManager
         )
         {
-            _entityRepository = entityRepository; 
-             _entityManager=entityManager;
+            _entityRepository = entityRepository;
+            _entityManager = entityManager;
             _employeeRepository = employeeRepository;
             _organizationRepository = organizationRepository;
             _categoryRepository = categoryRepository;
@@ -68,78 +67,78 @@ namespace GYSWP.Documents
         /// <returns></returns>
 
         public async Task<PagedResultDto<DocumentListDto>> GetPaged(GetDocumentsInput input)
-		{
+        {
             //var categories = await _categoryRepository.GetAll().Where(d => d.DeptId == input.DeptId).Select(c => c.Id).ToArrayAsync();
             //var carr = Array.ConvertAll(categories, c => "," + c + ",");
-            var query = _entityRepository.GetAll().Where(v=>v.DeptIds == input.DeptId)
-                .WhereIf(input.CategoryId.HasValue, v=>v.CategoryId == input.CategoryId)
+            var query = _entityRepository.GetAll().Where(v => v.DeptIds == input.DeptId)
+                .WhereIf(input.CategoryId.HasValue, v => v.CategoryId == input.CategoryId)
                 .WhereIf(!string.IsNullOrEmpty(input.KeyWord), e => e.Name.Contains(input.KeyWord) || e.DocNo.Contains(input.KeyWord));
             //var query = _entityRepository.GetAll();
-			// TODO:根据传入的参数添加过滤条件
-           
-
-			var count = await query.CountAsync();
-
-			var entityList = await query
-					.OrderBy(input.Sorting).AsNoTracking()
-					.PageBy(input)
-					.ToListAsync();
-
-			// var entityListDtos = ObjectMapper.Map<List<DocumentListDto>>(entityList);
-			var entityListDtos =entityList.MapTo<List<DocumentListDto>>();
-
-			return new PagedResultDto<DocumentListDto>(count,entityListDtos);
-		}
+            // TODO:根据传入的参数添加过滤条件
 
 
-		/// <summary>
-		/// 通过指定id获取DocumentListDto信息
-		/// </summary>
-		 
-		public async Task<DocumentListDto> GetById(EntityDto<Guid> input)
-		{
-			var entity = await _entityRepository.GetAsync(input.Id);
+            var count = await query.CountAsync();
 
-		    return entity.MapTo<DocumentListDto>();
-		}
+            var entityList = await query
+                    .OrderByDescending(v => v.PublishTime).AsNoTracking()
+                    .PageBy(input)
+                    .ToListAsync();
 
-		/// <summary>
-		/// 获取编辑 Document
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		
-		public async Task<GetDocumentForEditOutput> GetForEdit(NullableIdDto<Guid> input)
-		{
-			var output = new GetDocumentForEditOutput();
-DocumentEditDto editDto;
+            // var entityListDtos = ObjectMapper.Map<List<DocumentListDto>>(entityList);
+            var entityListDtos = entityList.MapTo<List<DocumentListDto>>();
 
-			if (input.Id.HasValue)
-			{
-				var entity = await _entityRepository.GetAsync(input.Id.Value);
-
-				editDto = entity.MapTo<DocumentEditDto>();
-
-				//documentEditDto = ObjectMapper.Map<List<documentEditDto>>(entity);
-			}
-			else
-			{
-				editDto = new DocumentEditDto();
-			}
-
-			output.Document = editDto;
-			return output;
-		}
+            return new PagedResultDto<DocumentListDto>(count, entityListDtos);
+        }
 
 
-		/// <summary>
-		/// 添加或者修改Document的公共方法
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		
-		public async Task<APIResultDto> CreateOrUpdate(CreateOrUpdateDocumentInput input)
-		{
+        /// <summary>
+        /// 通过指定id获取DocumentListDto信息
+        /// </summary>
+
+        public async Task<DocumentListDto> GetById(EntityDto<Guid> input)
+        {
+            var entity = await _entityRepository.GetAsync(input.Id);
+
+            return entity.MapTo<DocumentListDto>();
+        }
+
+        /// <summary>
+        /// 获取编辑 Document
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        public async Task<GetDocumentForEditOutput> GetForEdit(NullableIdDto<Guid> input)
+        {
+            var output = new GetDocumentForEditOutput();
+            DocumentEditDto editDto;
+
+            if (input.Id.HasValue)
+            {
+                var entity = await _entityRepository.GetAsync(input.Id.Value);
+
+                editDto = entity.MapTo<DocumentEditDto>();
+
+                //documentEditDto = ObjectMapper.Map<List<documentEditDto>>(entity);
+            }
+            else
+            {
+                editDto = new DocumentEditDto();
+            }
+
+            output.Document = editDto;
+            return output;
+        }
+
+
+        /// <summary>
+        /// 添加或者修改Document的公共方法
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        public async Task<APIResultDto> CreateOrUpdate(CreateOrUpdateDocumentInput input)
+        {
 
             //if (input.Document.Id.HasValue)
             //{
@@ -162,62 +161,62 @@ DocumentEditDto editDto;
         }
 
 
-		/// <summary>
-		/// 新增Document
-		/// </summary>
-		
-		protected virtual async Task<DocumentEditDto> Create(DocumentEditDto input)
-		{
-			//TODO:新增前的逻辑判断，是否允许新增
+        /// <summary>
+        /// 新增Document
+        /// </summary>
+
+        protected virtual async Task<DocumentEditDto> Create(DocumentEditDto input)
+        {
+            //TODO:新增前的逻辑判断，是否允许新增
 
             // var entity = ObjectMapper.Map <Document>(input);
-            var entity=input.MapTo<Document>();
-			
-
-			entity = await _entityRepository.InsertAsync(entity);
-			return entity.MapTo<DocumentEditDto>();
-		}
-
-		/// <summary>
-		/// 编辑Document
-		/// </summary>
-		
-		protected virtual async Task Update(DocumentEditDto input)
-		{
-			//TODO:更新前的逻辑判断，是否允许更新
-
-			var entity = await _entityRepository.GetAsync(input.Id.Value);
-			input.MapTo(entity);
-
-			// ObjectMapper.Map(input, entity);
-		    await _entityRepository.UpdateAsync(entity);
-		}
+            var entity = input.MapTo<Document>();
 
 
+            entity = await _entityRepository.InsertAsync(entity);
+            return entity.MapTo<DocumentEditDto>();
+        }
 
-		/// <summary>
-		/// 删除Document信息的方法
-		/// </summary>
-		/// <param name="input"></param>
-		/// <returns></returns>
-		
-		public async Task Delete(EntityDto<Guid> input)
-		{
-			//TODO:删除前的逻辑判断，是否允许删除
-			await _entityRepository.DeleteAsync(input.Id);
-		}
+        /// <summary>
+        /// 编辑Document
+        /// </summary>
+
+        protected virtual async Task Update(DocumentEditDto input)
+        {
+            //TODO:更新前的逻辑判断，是否允许更新
+
+            var entity = await _entityRepository.GetAsync(input.Id.Value);
+            input.MapTo(entity);
+
+            // ObjectMapper.Map(input, entity);
+            await _entityRepository.UpdateAsync(entity);
+        }
 
 
 
-		/// <summary>
-		/// 批量删除Document的方法
-		/// </summary>
-		
-		public async Task BatchDelete(List<Guid> input)
-		{
-			// TODO:批量删除前的逻辑判断，是否允许删除
-			await _entityRepository.DeleteAsync(s => input.Contains(s.Id));
-		}
+        /// <summary>
+        /// 删除Document信息的方法
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        public async Task Delete(EntityDto<Guid> input)
+        {
+            //TODO:删除前的逻辑判断，是否允许删除
+            await _entityRepository.DeleteAsync(input.Id);
+        }
+
+
+
+        /// <summary>
+        /// 批量删除Document的方法
+        /// </summary>
+
+        public async Task BatchDelete(List<Guid> input)
+        {
+            // TODO:批量删除前的逻辑判断，是否允许删除
+            await _entityRepository.DeleteAsync(s => input.Contains(s.Id));
+        }
 
 
         /// <summary>
@@ -302,6 +301,41 @@ DocumentEditDto editDto;
             }
             docDeptList.Add(root);
             return docDeptList;
+        }
+
+        /// <summary>
+        /// 获取当前用户所属标准
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<PagedResultDto<DocumentListDto>> GetPagedWithPermission(GetDocumentsInput input)
+        {
+            var curUser = await GetCurrentUserAsync();
+            var query = _entityRepository.GetAll().Where(v => (v.PublishTime.HasValue ? v.PublishTime <= DateTime.Today : false) && (v.IsAllUser == true || v.EmployeeIds.Contains(curUser.EmployeeId)))
+                .WhereIf(input.CategoryId.HasValue, v => v.CategoryId == input.CategoryId)
+                .WhereIf(!string.IsNullOrEmpty(input.KeyWord), e => e.Name.Contains(input.KeyWord) || e.DocNo.Contains(input.KeyWord));
+            var count = await query.CountAsync();
+            var entityList = await query
+                    .OrderBy(v=>v.CategoryId)
+                    .ThenByDescending(v => v.PublishTime).AsNoTracking()
+                    .PageBy(input)
+                    .ToListAsync();
+            var entityListDtos = entityList.MapTo<List<DocumentListDto>>();
+            return new PagedResultDto<DocumentListDto>(count, entityListDtos);
+        }
+
+        /// <summary>
+        /// 自查学习标题相关信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<DocumentTitleDto> GetDocumentTitleAsync(Guid id)
+        {
+            var query = await _entityRepository.GetAsync(id);
+            string deptName = await _organizationRepository.GetAll().Where(v => v.Id.ToString() == query.DeptIds).Select(v => v.DepartmentName).FirstOrDefaultAsync();
+            var result = query.MapTo<DocumentTitleDto>();
+            result.DeptName = deptName;
+            return result;
         }
     }
 }
