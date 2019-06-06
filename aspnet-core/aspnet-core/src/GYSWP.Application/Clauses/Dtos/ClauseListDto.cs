@@ -52,6 +52,7 @@ namespace GYSWP.Clauses.Dtos
         public string ClauseNo { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public bool Checked { get; set; }
         //public int Level { get; set; } = 0;
         public List<ClauseTreeNodeDto> Children = new List<ClauseTreeNodeDto>();
     }
@@ -67,6 +68,7 @@ namespace GYSWP.Clauses.Dtos
 
         public string Title { get; set; }
         public string Content { get; set; }
+        public bool Checked { get; set; }
         /// <summary>
         /// 父Id（root 为 空）
         /// </summary>

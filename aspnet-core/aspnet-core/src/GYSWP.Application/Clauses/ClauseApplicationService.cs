@@ -22,6 +22,7 @@ using GYSWP.Clauses;
 using GYSWP.Clauses.Dtos;
 using GYSWP.Clauses.DomainService;
 using GYSWP.Dtos;
+using GYSWP.EmployeeClauses;
 
 namespace GYSWP.Clauses
 {
@@ -32,7 +33,7 @@ namespace GYSWP.Clauses
     public class ClauseAppService : GYSWPAppServiceBase, IClauseAppService
     {
         private readonly IRepository<Clause, Guid> _entityRepository;
-
+        private readonly IRepository<EmployeeClause, Guid> _employeeClauseRepository;
         private readonly IClauseManager _entityManager;
 
         /// <summary>
@@ -41,10 +42,12 @@ namespace GYSWP.Clauses
         public ClauseAppService(
         IRepository<Clause, Guid> entityRepository
         , IClauseManager entityManager
+        , IRepository<EmployeeClause, Guid> employeeClauseRepository
         )
         {
             _entityRepository = entityRepository;
             _entityManager = entityManager;
+            _employeeClauseRepository = employeeClauseRepository;
         }
 
 
@@ -93,6 +96,12 @@ namespace GYSWP.Clauses
             }).ToList();
             return list;
         }
+
+        /// <summary>
+        /// 获取条款树形表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public async Task<List<ClauseTreeNodeDto>> GetClauseTreeAsync(GetClausesInput input)
         {
             var clause = await _entityRepository.GetAll().Where(v => v.DocumentId == input.DocumentId).Select(v=>new ClauseTreeListDto()
@@ -105,6 +114,8 @@ namespace GYSWP.Clauses
             }).OrderBy(v=>v.ClauseNo).ToListAsync();
             return GetChildren(null, clause);
         }
+
+
         /// <summary>
         /// 通过指定id获取ClauseListDto信息
         /// </summary>
@@ -253,6 +264,61 @@ namespace GYSWP.Clauses
                 await _entityRepository.DeleteAsync(id.Id);
                 return new APIResultDto() { Code = 0, Msg = "删除成功" };
             }
+        }
+
+
+        /// <summary>
+        /// 获取子条款
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="clauseList"></param>
+        /// <returns></returns>
+        private List<ClauseTreeNodeDto> GetChildrenWithChecked(Guid? id, List<ClauseTreeListDto> clauseList)
+        {
+            var list = clauseList.Where(c => c.ParentId == id).Select(c => new ClauseTreeNodeDto()
+            {
+                Id = c.Id,
+                ClauseNo = c.ClauseNo,
+                Title = c.Title,
+                Content = c.Content,
+                ParentId = c.ParentId,
+                Checked = c.Checked,
+                Children = GetChildrenWithChecked(c.Id, clauseList)
+            }).ToList();
+            return list;
+        }
+
+        /// <summary>
+        /// 获取确认后的条款树形表
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public async Task<List<ClauseTreeNodeDto>> GetClauseTreeWithCheckedAsync(GetClausesInput input)
+        {
+            var user = await GetCurrentUserAsync();
+            var confirmIds = await _employeeClauseRepository.GetAll().Where(v => v.DocumentId == input.DocumentId && v.EmployeeId == user.EmployeeId).Select(v => v.ClauseId).ToListAsync();
+
+            var clause = await _entityRepository.GetAll().Where(v => v.DocumentId == input.DocumentId).Select(v => new ClauseTreeListDto()
+            {
+                Id = v.Id,
+                ClauseNo = v.ClauseNo,
+                Title = v.Title,
+                Content = v.Content,
+                ParentId = v.ParentId
+            }).OrderBy(v => v.ClauseNo).ToListAsync();
+            foreach (var item in clause)
+            {
+                foreach (var cnfmId in confirmIds)
+                {
+                    if(item.Id == cnfmId)
+                    {
+                        item.Checked = true;
+                        break;
+                    }
+                }
+            }
+
+            return GetChildrenWithChecked(null, clause);
         }
     }
 }

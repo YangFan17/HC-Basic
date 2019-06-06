@@ -10,6 +10,8 @@ using GYSWP.Categorys;
 using GYSWP.Documents;
 using GYSWP.Clauses;
 using GYSWP.DocAttachments;
+using GYSWP.SelfChekRecords;
+using GYSWP.EmployeeClauses;
 
 namespace GYSWP.EntityFrameworkCore
 {
@@ -29,5 +31,7 @@ namespace GYSWP.EntityFrameworkCore
         public virtual DbSet<Document> Documents { get; set; }
         public virtual DbSet<Clause> Clauses { get; set; }
         public virtual DbSet<DocAttachment> DocAttachments { get; set; }
+        public virtual DbSet<SelfChekRecord> SelfChekRecords { get; set; }
+        public virtual DbSet<EmployeeClause> EmployeeClauses { get; set; }
     }
 }

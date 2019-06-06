@@ -18,29 +18,28 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 
 
-using GYSWP.Clauses.Dtos;
-using GYSWP.Clauses;
-using GYSWP.Dtos;
+using GYSWP.SelfChekRecords.Dtos;
+using GYSWP.SelfChekRecords;
 
-namespace GYSWP.Clauses
+namespace GYSWP.SelfChekRecords
 {
     /// <summary>
-    /// Clause应用层服务的接口方法
+    /// SelfChekRecord应用层服务的接口方法
     ///</summary>
-    public interface IClauseAppService : IApplicationService
+    public interface ISelfChekRecordAppService : IApplicationService
     {
         /// <summary>
-		/// 获取Clause的分页列表信息
+		/// 获取SelfChekRecord的分页列表信息
 		///</summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<PagedResultDto<ClauseListDto>> GetPaged(GetClausesInput input);
+        Task<PagedResultDto<SelfChekRecordListDto>> GetPaged(GetSelfChekRecordsInput input);
 
 
 		/// <summary>
-		/// 通过指定id获取ClauseListDto信息
+		/// 通过指定id获取SelfChekRecordListDto信息
 		/// </summary>
-		Task<ClauseListDto> GetById(EntityDto<Guid> input);
+		Task<SelfChekRecordListDto> GetById(EntityDto<Guid> input);
 
 
         /// <summary>
@@ -48,19 +47,19 @@ namespace GYSWP.Clauses
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<GetClauseForEditOutput> GetForEdit(NullableIdDto<Guid> input);
+        Task<GetSelfChekRecordForEditOutput> GetForEdit(NullableIdDto<Guid> input);
 
 
         /// <summary>
-        /// 添加或者修改Clause的公共方法
+        /// 添加或者修改SelfChekRecord的公共方法
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        Task<APIResultDto> CreateOrUpdate(CreateOrUpdateClauseInput input);
+        Task CreateOrUpdate(CreateOrUpdateSelfChekRecordInput input);
 
 
         /// <summary>
-        /// 删除Clause信息的方法
+        /// 删除SelfChekRecord信息的方法
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -68,12 +67,16 @@ namespace GYSWP.Clauses
 
 
         /// <summary>
-        /// 批量删除Clause
+        /// 批量删除SelfChekRecord
         /// </summary>
         Task BatchDelete(List<Guid> input);
 
-        Task<List<ClauseTreeNodeDto>> GetClauseTreeAsync(GetClausesInput input);
-        Task<APIResultDto> ClauseRemoveById(EntityDto<Guid> id);
-        Task<List<ClauseTreeNodeDto>> GetClauseTreeWithCheckedAsync(GetClausesInput input);
+
+		/// <summary>
+        /// 导出SelfChekRecord为excel表
+        /// </summary>
+        /// <returns></returns>
+		//Task<FileDto> GetToExcel();
+
     }
 }
